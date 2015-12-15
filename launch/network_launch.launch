@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Loading the configuration file for our example node -->
+  <rosparam command="load" file="$(find legged_robotics)/config/settings.yaml" ns="/servo_net/"/>
+  <!-- End of configuration file loading -->
+
+  <!-- Loading example node instances -->
+  <node pkg="legged_robotics" type="network_node.py" name="servo_net" >
+  </node>
+
+  <!-- End example node loading -->
+
+</launch>
