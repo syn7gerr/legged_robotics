@@ -7,7 +7,6 @@
   <!-- Loading example node instances -->
   <node pkg="legged_robotics" type="network_node.py" name="servo_net" >
   </node>
-
   <!-- End example node loading -->
 
 </launch>

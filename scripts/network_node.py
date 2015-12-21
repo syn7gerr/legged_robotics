@@ -4,30 +4,30 @@
 
 import rospy
 import dynamixel
-from legged_robotics.msg import Dynamixel_Net
+from sensor_msgs.msg import JointState
 
 def refresh_net(data):
-	for actuator in net.get_dynamixels():
-		actuator.moving_speed = int(data.moving_speed.data)
-		actuator.torque_limit = int(data.torque_limit.data)
-		actuator.goal_position = int(data.goal_position.data)
-
+	for i in xrange(len(net.get_dynamixels())):
+		actId = int(data.name[i])
+		net[actId].moving_speed = int(data.velocity[i])
+		net[actId].torque_limit = int(data.effort[i])
+		net[actId].goal_position = int(data.position[i])
 	net.synchronize()
 
 if __name__ == '__main__':
 	try:
 		rospy.init_node('network_node')
 
-		# Initializing the serial port connection based on configuration file data in /config/settings.yaml and creating a network
+		# Initializing the serial port connection
 		serial = dynamixel.SerialStream(port=rospy.get_param("~port"), baudrate=rospy.get_param("~baudRate"), timeout=1)
+		# Initializing the dynamixel network
 		net = dynamixel.DynamixelNetwork(serial)
-
-		# Populating the created network with the servo ids found in /config/setting.
+		# Populating the created network with specified servo ids
 		for servoId in rospy.get_param("~servoIds"):
 			newDynamixel = dynamixel.Dynamixel(servoId, net)
 			net._dynamixel_map[servoId] = newDynamixel
 
-		sub = rospy.Subscriber('cmd_pos', Dynamixel_Net, refresh_net)
+		sub = rospy.Subscriber('cmd_pos', JointState, refresh_net)
 		rospy.spin()
 
 	except rospy.ROSInterruptException:
